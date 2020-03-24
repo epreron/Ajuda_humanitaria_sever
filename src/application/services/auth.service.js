@@ -1,9 +1,7 @@
 const passport = require('passport');
 const { Strategy, ExtractJwt } = require('passport-jwt');
 
-const jwt = require('jsonwebtoken');
-
-const config = require('../config');
+const config = require('../../config');
 
 // VARIABLES
 
@@ -16,7 +14,13 @@ const strategyOptions = {
 // PASSPORT
 
 passport.use(new Strategy(strategyOptions, (token, done) => {
-  done(jwt.decode(token));
+  done(null, {
+    userID: token.userID,
+    userName: token.userName,
+    userAge: token.userAge,
+    userFamilyDependents: token.userFamilyDependents,
+    userContactPhone: token.userContactPhone,
+  });
 }));
 
 // MIDDLEWARES
