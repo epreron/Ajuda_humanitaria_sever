@@ -4,7 +4,9 @@ const corsMiddleware = require('restify-cors-middleware');
 
 const api = require('../api');
 
-module.exports = (config) => new Promise((resolve) => {
+const databases = require('../databases');
+
+module.exports = (config) => new Promise((resolve, reject) => {
   const cors = corsMiddleware({
     preflightMaxAge: 5,
     origins: config.env.security.cors,
@@ -74,14 +76,28 @@ module.exports = (config) => new Promise((resolve) => {
     next();
   });
 
-  // server.use(authService.initialize);
+  server.on('InternalServer', (req, res, err, callback) => {
+    callback();
+  });
+
+  server.on('restifyError', (req, res, err, callback) => {
+    callback();
+  });
 
   // ROUTES
 
   api.applyRoutes(server);
 
-  // START
-  server.listen(config.env.server.port, config.env.server.host, () => {
-    resolve(server);
+  server.$close = server.close;
+  server.close = () => new Promise((closeResolve) => {
+    databases.disconnect().finally(() => server.$close(closeResolve));
   });
+
+  databases.connect()
+    .then(() => {
+      server.listen(config.env.server.port, config.env.server.host, () => {
+        resolve(server);
+      });
+    })
+    .catch(reject);
 });

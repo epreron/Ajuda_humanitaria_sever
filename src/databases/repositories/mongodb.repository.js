@@ -3,15 +3,22 @@ const mongoose = require('mongoose');
 const config = require('../../config');
 
 const { Schema, model: Model } = mongoose;
-mongoose.connect(config.env.mongo.uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
 module.exports = class MongoRepository {
   constructor(collection, model) {
     this.schema = new Schema(model);
     this.Model = Model(collection, this.schema);
+  }
+
+  static connect() {
+    return mongoose.connect(config.env.mongo.uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  }
+
+  static disconnect() {
+    return mongoose.disconnect();
   }
 
   find(queryObject) {
