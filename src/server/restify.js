@@ -76,14 +76,6 @@ module.exports = (config) => new Promise((resolve, reject) => {
     next();
   });
 
-  server.on('InternalServer', (req, res, err, callback) => {
-    callback();
-  });
-
-  server.on('restifyError', (req, res, err, callback) => {
-    callback();
-  });
-
   // ROUTES
 
   api.applyRoutes(server);
