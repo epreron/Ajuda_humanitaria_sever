@@ -3,6 +3,9 @@ const { Strategy, ExtractJwt } = require('passport-jwt');
 
 const config = require('../../config');
 
+const userValidator = require('../validators/user.validator');
+const UnprocessableEntityError = require('../utils/unprocessable-entity-error');
+
 // VARIABLES
 
 const strategyOptions = {
@@ -14,13 +17,18 @@ const strategyOptions = {
 // PASSPORT
 
 passport.use(new Strategy(strategyOptions, (token, done) => {
-  done(null, {
-    userID: token.userID,
-    userName: token.userName,
-    userAge: token.userAge,
-    userFamilyDependents: token.userFamilyDependents,
-    userContactPhone: token.userContactPhone,
-  });
+  const errors = userValidator(token);
+
+  if (errors) done(UnprocessableEntityError(errors));
+  else {
+    done(null, {
+      userID: token.userID,
+      userName: token.userName,
+      userAge: token.userAge,
+      userFamilyDependents: token.userFamilyDependents,
+      userContactPhone: token.userContactPhone,
+    });
+  }
 }));
 
 // MIDDLEWARES

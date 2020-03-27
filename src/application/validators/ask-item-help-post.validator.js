@@ -6,31 +6,49 @@ module.exports = function validator(model = {}) {
       presence: false,
     },
     title: {
-      presence: true,
+      type: 'string',
+      presence: {
+        allowEmpty: false,
+      },
     },
     postType: {
-      presence: true,
+      type: 'string',
+      presence: {
+        allowEmpty: false,
+      },
     },
     date: {
-      presence: true,
+      type: 'date',
+      presence: {
+        allowEmpty: false,
+      },
     },
     status: {
-      presence: true,
+      type: 'string',
     },
     needHelpType: {
-      presence: true,
+      type: 'string',
+      presence: {
+        allowEmpty: false,
+      },
     },
     description: {
-      presence: true,
+      type: 'string',
     },
-    String: {
+    itensNeeded: {
+      type: 'array',
       presence: true,
     },
     coordinates: {
-      presence: true,
+      type: 'array',
+      presence: {
+        allowEmpty: false,
+      },
     },
     user: {
-      presence: true,
+      presence: {
+        allowEmpty: false,
+      },
     },
   });
 };
